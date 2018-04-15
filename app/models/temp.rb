@@ -1,4 +1,4 @@
 class Temp < ApplicationRecord
   belongs_to :project
-  validates :value, presence: true
+  validates_presence_of :value
 end
