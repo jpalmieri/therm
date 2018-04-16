@@ -1,13 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe 'Temps API', type: :request do
-  let!(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let!(:project) { create(:project, user_id: user.id) }
   let!(:temps) { create_list(:temp, 10, project_id: project.id) }
   let(:project_id) { project.id }
   let(:id) { temps.first.id }
+  let(:headers) { valid_headers }
 
   describe 'GET projects/:project_id/temps' do
-    before { get "/projects/#{project_id}/temps" }
+    before { get "/projects/#{project_id}/temps", params: {}, headers: headers }
 
     context 'when project exists' do
       it 'returns status code 200' do
@@ -33,7 +35,7 @@ RSpec.describe 'Temps API', type: :request do
   end
 
   describe 'GET /projects/:project_id/temps/:id'  do
-    before { get "/projects/#{project_id}/temps/#{id}" }
+    before { get "/projects/#{project_id}/temps/#{id}", params: {}, headers: headers }
 
     context 'when temp exists' do
       it 'returns status code 200' do
@@ -59,10 +61,10 @@ RSpec.describe 'Temps API', type: :request do
   end
 
   describe 'POST /projects/:project_id/temps' do
-    let(:valid_attributes) { { value: 32.02 } }
+    let(:valid_attributes) { { value: 32.02 }.to_json }
 
     context 'when attributes are valid' do
-      before { post "/projects/#{project_id}/temps", params: valid_attributes }
+      before { post "/projects/#{project_id}/temps", params: valid_attributes, headers: headers }
 
       it 'returns a 201 status code' do
         expect(response).to have_http_status(201)
@@ -70,7 +72,7 @@ RSpec.describe 'Temps API', type: :request do
     end
 
     context 'when an invalid request' do
-      before { post "/projects/#{project_id}/temps", params: {} }
+      before { post "/projects/#{project_id}/temps", params: {}, headers: headers }
 
       it 'returns a failure message' do
         expect(response.body).to match(/Validation failed: Value can't be blank/)
@@ -79,10 +81,10 @@ RSpec.describe 'Temps API', type: :request do
   end
 
   describe 'PUT /projects/:project_id/temps/:id' do
-    let(:valid_attributes) { { value: temp_value } }
+    let(:valid_attributes) { { value: temp_value }.to_json }
     let(:temp_value) { 32 }
 
-    before { put "/projects/#{project_id}/temps/#{id}", params: valid_attributes }
+    before { put "/projects/#{project_id}/temps/#{id}", params: valid_attributes, headers: headers }
 
     context 'when temp exists' do
       it 'returs status code 204' do
@@ -109,7 +111,7 @@ RSpec.describe 'Temps API', type: :request do
   end
 
   describe 'DELETE /projects/:id' do
-    before { delete "/projects/#{project_id}/temps/#{id}" }
+    before { delete "/projects/#{project_id}/temps/#{id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
