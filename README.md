@@ -1,24 +1,3 @@
-# README
+# Therm [WIP]
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+A simple temperature management API. I plan to use this for home brewing beer, but it's simple enough to be applied in a variety of ways.
