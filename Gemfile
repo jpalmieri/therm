@@ -32,6 +32,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Provides ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.0'
 
+# A pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.
+gem 'jwt'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
