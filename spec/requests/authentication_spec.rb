@@ -16,6 +16,7 @@ RSpec.describe 'Authentication', type: :request do
         password: Faker::Internet.password
       }.to_json
     end
+    let(:request) { double 'request' }
 
     # set request.headers to custom headers
     before { allow(request).to receive(:headers).and_return(headers) }
