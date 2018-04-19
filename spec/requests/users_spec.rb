@@ -25,15 +25,32 @@ RSpec.describe 'UsersAPI', type: :request do
     end
 
     context 'when invalid request' do
-      before { post '/signup', params: {}, headers: headers }
+      context 'email address already exists' do
+        before do
+          post '/signup', params: valid_attributes.to_json, headers: headers
+          post '/signup', params: valid_attributes.to_json, headers: headers
+        end
 
-      it 'does not create a new user' do
-        expect(response).to have_http_status(422)
+        it 'does not create a new user' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'returns failure message' do
+          expect(json['message']).to match(/Email has already been taken/)
+        end
       end
 
-      it 'returns failure message' do
-        expect(json['message'])
-          .to match(/Validation failed: Password can't be blank, Name can't be blank, Email can't be blank/)
+      context 'missing all params' do
+        before { post '/signup', params: {}, headers: headers }
+
+        it 'does not create a new user' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'returns failure message' do
+          expect(json['message'])
+            .to match(/Validation failed: Password can't be blank, Name can't be blank, Email can't be blank/)
+        end
       end
     end
   end
