@@ -14,8 +14,8 @@ class TempsController < ApplicationController
 
   # POST /projects/:project_id/temps
   def create
-    @project.temps.create!(temp_params)
-    json_response(@project, :created)
+    temp = @project.temps.create!(temp_params)
+    json_response(temp, :created)
   end
 
   # PUT /projects/:project_id/temps/:id
@@ -37,7 +37,7 @@ class TempsController < ApplicationController
   end
 
   def set_project
-    @project = Project.find(params[:project_id])
+    @project = current_user.projects.find(params[:project_id])
   end
 
   def set_temp
