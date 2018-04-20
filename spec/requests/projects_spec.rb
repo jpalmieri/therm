@@ -9,9 +9,10 @@ RSpec.describe 'Projects API', type: :request do
   describe 'GET /projects' do
     before { get '/projects', params: {}, headers: headers }
 
-    it 'returns projects' do
+    it 'returns projects which belong to user' do
       expect(json).not_to be_empty
       expect(json.size).to eq(10)
+      expect(json.all? { |x| x['user_id'] == user.id }).to be true
     end
 
     it 'returns status code 200' do
@@ -30,6 +31,10 @@ RSpec.describe 'Projects API', type: :request do
 
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
+      end
+
+      context 'when the record belongs to another user' do
+        include_examples "other user's project"
       end
     end
 
@@ -96,6 +101,10 @@ RSpec.describe 'Projects API', type: :request do
       it 'returns status code 204' do
         expect(response).to have_http_status(204)
       end
+
+      context 'when the record belongs to another user' do
+        include_examples "other user's project"
+      end
     end
   end
 
@@ -104,6 +113,10 @@ RSpec.describe 'Projects API', type: :request do
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
+    end
+
+    context 'when the record belongs to another user' do
+      include_examples "other user's project"
     end
   end
 end

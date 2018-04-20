@@ -12,12 +12,18 @@ RSpec.describe 'Temps API', type: :request do
     before { get "/projects/#{project_id}/temps", params: {}, headers: headers }
 
     context 'when project exists' do
-      it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+      context 'when project belongs to user' do
+        it 'returns status code 200' do
+          expect(response).to have_http_status(200)
+        end
+
+        it 'returns all temps' do
+          expect(json.size).to eq (10)
+        end
       end
 
-      it 'returns all temps' do
-        expect(json.size).to eq (10)
+      context 'when project belongs to other user' do
+        include_examples "other user's project"
       end
     end
 
@@ -36,6 +42,10 @@ RSpec.describe 'Temps API', type: :request do
 
   describe 'GET /projects/:project_id/temps/:id'  do
     before { get "/projects/#{project_id}/temps/#{id}", params: {}, headers: headers }
+
+    context 'when project belongs to other user' do
+      include_examples "other user's project"
+    end
 
     context 'when temp exists' do
       it 'returns status code 200' do
@@ -63,16 +73,20 @@ RSpec.describe 'Temps API', type: :request do
   describe 'POST /projects/:project_id/temps' do
     let(:valid_attributes) { { value: 32.02 }.to_json }
 
-    context 'when attributes are valid' do
-      before { post "/projects/#{project_id}/temps", params: valid_attributes, headers: headers }
+    before { post "/projects/#{project_id}/temps", params: valid_attributes, headers: headers }
 
+    context 'when project belongs to other user' do
+      include_examples "other user's project"
+    end
+
+    context 'when attributes are valid' do
       it 'returns a 201 status code' do
         expect(response).to have_http_status(201)
       end
     end
 
     context 'when an invalid request' do
-      before { post "/projects/#{project_id}/temps", params: {}, headers: headers }
+      let(:valid_attributes) { {} }
 
       it 'returns a failure message' do
         expect(response.body).to match(/Validation failed: Value can't be blank/)
@@ -85,6 +99,10 @@ RSpec.describe 'Temps API', type: :request do
     let(:temp_value) { 32 }
 
     before { put "/projects/#{project_id}/temps/#{id}", params: valid_attributes, headers: headers }
+
+    context 'when project belongs to other user' do
+      include_examples "other user's project"
+    end
 
     context 'when temp exists' do
       it 'returs status code 204' do
@@ -112,6 +130,10 @@ RSpec.describe 'Temps API', type: :request do
 
   describe 'DELETE /projects/:id' do
     before { delete "/projects/#{project_id}/temps/#{id}", params: {}, headers: headers }
+
+    context 'when project belongs to other user' do
+      include_examples "other user's project"
+    end
 
     context 'when the temp exists' do
       it 'returns status code 204' do

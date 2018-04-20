@@ -22,3 +22,17 @@ module ControllerSpecHelper
     }
   end
 end
+
+RSpec.shared_examples "other user's project" do
+  let(:other_user) { create(:user) }
+  let!(:other_project) { create(:project, user_id: other_user.id) }
+  let(:project_id) { other_project.id }
+
+  it 'returns status code 404' do
+    expect(response).to have_http_status(404)
+  end
+
+  it 'returns a not found message' do
+    expect(response.body).to match(/Couldn't find Project/)
+  end
+end
