@@ -113,8 +113,22 @@ RSpec.describe 'Temps API', type: :request do
   describe 'DELETE /projects/:id' do
     before { delete "/projects/#{project_id}/temps/#{id}", params: {}, headers: headers }
 
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
+    context 'when the temp exists' do
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context 'when the temp does not exist' do
+      let(:id) { 0 }
+
+      it 'returns a status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Temp/)
+      end
     end
   end
 end
